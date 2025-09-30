@@ -4,10 +4,12 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-
+const dotenv = require('dotenv')
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+dotenv.config();
 // ===================================
 // Configuración de Seguridad
 // ===================================
