@@ -3,7 +3,7 @@
    =================================== */
 :root {
   /* Colors */
-  --color-bg: #0a0a0a;
+  --color-bg: #000000;
   --color-bg-secondary: #121212;
   --color-bg-tertiary: #1a1a1a;
   --color-text: #e0e0e0;
@@ -145,11 +145,16 @@ button {
 }
 
 .nav-logo {
-  font-family: var(--font-heading);
+  /* font-family: var(--font-heading);
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: bold; */
+  height: 30px;
   color: var(--color-accent);
   letter-spacing: 0.1em;
+}
+
+.nav-img {
+  height: 30px;
 }
 
 .nav-menu {
@@ -199,7 +204,7 @@ button {
   overflow: hidden;
 }
 
-.hero-parallax-bg {
+/* .hero-parallax-bg {
   position: absolute;
   top: -50%;
   left: -50%;
@@ -209,7 +214,7 @@ button {
     radial-gradient(circle at 30% 50%, rgba(42, 42, 42, 0.3) 0%, transparent 50%),
     radial-gradient(circle at 70% 50%, rgba(42, 42, 42, 0.2) 0%, transparent 50%);
   z-index: 0;
-}
+} */
 
 .hero-container {
   max-width: 1200px;
@@ -281,7 +286,7 @@ button {
   box-shadow: var(--shadow-strong);
 }
 
-.image-glow {
+/* .image-glow {
   position: absolute;
   top: -10px;
   left: -10px;
@@ -292,7 +297,7 @@ button {
   filter: blur(30px);
   z-index: 1;
   animation: pulse 3s ease-in-out infinite;
-}
+} */
 
 @keyframes pulse {
   0%, 100% { opacity: 0.15; }
@@ -932,6 +937,14 @@ button {
     --space-lg: 3rem;
     --space-xl: 4rem;
   }
+
+  .nav-logo {
+    height: 20px;
+  }
+
+  .nav-img {
+    height: 20px;
+  }
   
   .container {
     padding: 0 var(--space-sm);
@@ -1008,6 +1021,14 @@ button {
 @media (max-width: 480px) {
   .hero-name {
     font-size: 2rem;
+  }
+
+  .nav-logo {
+    height: 12px;
+  }
+
+  .nav-img {
+    height: 12px;
   }
   
   .section-title {
