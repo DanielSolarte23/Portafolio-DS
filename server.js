@@ -1,11 +1,14 @@
 const express = require('express');
 const { engine } = require('express-handlebars');
+const helmet = require ('helmet');
+const compression = require ('compression') ;
 const nodemailer = require('nodemailer');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv')
 const app = express();
+const { fileURLToPath } = require ('url');
 const PORT = process.env.PORT || 3000;
 
 
@@ -24,6 +27,11 @@ app.use(helmet({
     }
   }
 }));
+
+// Seguridad y rendimiento
+app.use(helmet());
+app.use(compression());
+
 
 // ===================================
 // Rate Limiting
