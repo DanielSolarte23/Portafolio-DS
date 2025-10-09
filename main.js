@@ -418,10 +418,10 @@ function trapFocus(element) {
 // ===================================
 // Console Art (Easter Egg)
 // ===================================
-console.log('%c¡Hola Developer! 👋', 'font-size: 20px; font-weight: bold; color: #ffd700;');
-console.log('%cEste portafolio fue construido con ❤️ usando:', 'font-size: 14px; color: #a0a0a0;');
+console.log('%c¡Hola!', 'font-size: 20px; font-weight: bold; color: #ffd700;');
+console.log('%cEste portafolio fue construido usando:', 'font-size: 14px; color: #a0a0a0;');
 console.log('%c• HTML5 + Handlebars\n• CSS3 (Variables nativas)\n• Vanilla JavaScript\n• Node.js + Express\n• Nodemailer', 'font-size: 12px; color: #e0e0e0;');
-console.log('%c\n¿Interesado en colaborar? ¡Contáctame! 🚀', 'font-size: 14px; font-weight: bold; color: #ffd700;');
+console.log('%c\n¿Interesado? ¡Contáctame!', 'font-size: 14px; font-weight: bold; color: #ffd700;');
 
 // ===================================
 // Inicialización

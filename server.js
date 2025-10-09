@@ -4,7 +4,6 @@ const helmet = require ('helmet');
 const compression = require ('compression') ;
 const nodemailer = require('nodemailer');
 const path = require('path');
-const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv')
 const app = express();
@@ -12,27 +11,43 @@ const { fileURLToPath } = require ('url');
 const PORT = process.env.PORT || 3000;
 
 
-dotenv.config();
+
 // ===================================
 // Configuración de Seguridad
 // ===================================
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
-      fontSrc: ["'self'", 'data:']
-    }
-  }
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://www.googletagmanager.com",
+          "https://www.google-analytics.com",
+        ],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://www.google-analytics.com",
+        ],
+        fontSrc: ["'self'", "data:"],
+        connectSrc: [
+          "'self'",
+          "https://www.google-analytics.com",
+          "https://www.googletagmanager.com",
+        ],
+      },
+    },
+  })
+);
+
 
 // Seguridad y rendimiento
-app.use(helmet());
+// app.use(helmet());
 app.use(compression());
-
-
+dotenv.config();
 // ===================================
 // Rate Limiting
 // ===================================
