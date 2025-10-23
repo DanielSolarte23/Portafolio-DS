@@ -1,30 +1,53 @@
 const express = require('express');
 const { engine } = require('express-handlebars');
+const helmet = require ('helmet');
+const compression = require ('compression') ;
 const nodemailer = require('nodemailer');
 const path = require('path');
-const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv')
 const app = express();
+const { fileURLToPath } = require ('url');
 const PORT = process.env.PORT || 3000;
 
 
-dotenv.config();
+
 // ===================================
 // Configuración de Seguridad
 // ===================================
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
-      fontSrc: ["'self'", 'data:']
-    }
-  }
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://www.googletagmanager.com",
+          "https://www.google-analytics.com",
+        ],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://www.google-analytics.com",
+        ],
+        fontSrc: ["'self'", "data:"],
+        connectSrc: [
+          "'self'",
+          "https://www.google-analytics.com",
+          "https://www.googletagmanager.com",
+        ],
+      },
+    },
+  })
+);
 
+
+// Seguridad y rendimiento
+// app.use(helmet());
+app.use(compression());
+dotenv.config();
 // ===================================
 // Rate Limiting
 // ===================================
@@ -159,7 +182,7 @@ function sanitizeInput(input) {
 // Ruta principal
 app.get('/', (req, res) => {
   res.render('index', {
-    title: 'Alex Rivera - Full-Stack Developer'
+    title: 'Daniel Solarte - Full-Stack Developer'
   });
 });
 
@@ -173,7 +196,7 @@ app.post('/contact', async (req, res) => {
     
     if (!validation.isValid) {
       return res.render('index', {
-        title: 'Alex Rivera - Full-Stack Developer',
+        title: 'Daniel Solarte - Full-Stack Developer',
         error: 'Por favor, corrige los errores en el formulario',
         formData: { name, email, subject, message },
         errors: validation.errors
@@ -191,7 +214,7 @@ app.post('/contact', async (req, res) => {
     // Configurar email al propietario del portafolio
     const mailToOwner = {
       from: `"Portafolio Contacto" <${process.env.EMAIL_USER}>`,
-      to: process.env.OWNER_EMAIL || 'alex.rivera@email.com',
+      to: process.env.OWNER_EMAIL || 'royersolarte22@gmail.com',
       replyTo: sanitizedData.email,
       subject: `Nuevo mensaje de portafolio: ${sanitizedData.subject}`,
       html: `
@@ -240,9 +263,9 @@ app.post('/contact', async (req, res) => {
     
     // Email de confirmación al remitente
     const mailToSender = {
-      from: `"Alex Rivera" <${process.env.EMAIL_USER}>`,
+      from: `"Daniel Solarte" <${process.env.EMAIL_USER}>`,
       to: sanitizedData.email,
-      subject: 'Gracias por tu mensaje - Alex Rivera',
+      subject: 'Gracias por tu mensaje - Daniel Solarte',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
           <div style="background-color: #0a0a0a; color: #ffd700; padding: 20px; text-align: center; border-radius: 5px 5px 0 0;">
@@ -266,22 +289,22 @@ app.post('/contact', async (req, res) => {
             
             <p style="color: #333; font-size: 16px; line-height: 1.6;">
               Mientras tanto, puedes revisar mis proyectos en mi 
-              <a href="https://github.com" style="color: #ffd700; text-decoration: none; font-weight: bold;">GitHub</a> 
+              <a href="https://github.com/DanielSolarte23" style="color: #ffd700; text-decoration: none; font-weight: bold;">GitHub</a> 
               o conectar conmigo en 
-              <a href="https://linkedin.com" style="color: #ffd700; text-decoration: none; font-weight: bold;">LinkedIn</a>.
+              <a href="www.linkedin.com/in/daniel-solarte-97486b329" style="color: #ffd700; text-decoration: none; font-weight: bold;">LinkedIn</a>.
             </p>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
               <p style="margin: 0; color: #333; font-size: 15px;">
                 Saludos,<br>
-                <strong style="color: #ffd700;">Alex Rivera</strong><br>
+                <strong style="color: #ffd700;">Daniel Solarte</strong><br>
                 <span style="color: #666; font-size: 14px;">Full-Stack Developer</span>
               </p>
             </div>
           </div>
           
           <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
-            <p style="margin: 0;">© 2025 Alex Rivera. Todos los derechos reservados.</p>
+            <p style="margin: 0;">© 2025 Daniel Solarte. Todos los derechos reservados.</p>
           </div>
         </div>
       `
@@ -293,7 +316,7 @@ app.post('/contact', async (req, res) => {
     
     // Responder con éxito
     return res.render('index', {
-      title: 'Alex Rivera - Full-Stack Developer',
+      title: 'Daniel Solarte - Full-Stack Developer',
       success: '¡Mensaje enviado correctamente! Te responderé pronto.'
     });
     
@@ -301,7 +324,7 @@ app.post('/contact', async (req, res) => {
     console.error('❌ Error al enviar email:', error);
     
     return res.render('index', {
-      title: 'Alex Rivera - Full-Stack Developer',
+      title: 'Daniel Solarte - Full-Stack Developer',
       error: 'Hubo un error al enviar el mensaje. Por favor, intenta nuevamente o contáctame directamente por email.',
       formData: req.body
     });
