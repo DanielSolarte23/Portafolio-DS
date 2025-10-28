@@ -187,6 +187,7 @@ app.get('/', (req, res) => {
 });
 
 // Ruta para procesar formulario de contacto
+// Ruta para procesar formulario de contacto - VERSIÓN MEJORADA
 app.post('/contact', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
@@ -195,9 +196,9 @@ app.post('/contact', async (req, res) => {
     const validation = validateContactForm({ name, email, subject, message });
     
     if (!validation.isValid) {
-      return res.render('index', {
+      return res.status(400).render('index', {
         title: 'Daniel Solarte - Full-Stack Developer',
-        error: 'Por favor, corrige los errores en el formulario',
+        errorMessage: 'Por favor, corrige los errores en el formulario',
         formData: { name, email, subject, message },
         errors: validation.errors
       });
@@ -291,7 +292,7 @@ app.post('/contact', async (req, res) => {
               Mientras tanto, puedes revisar mis proyectos en mi 
               <a href="https://github.com/DanielSolarte23" style="color: #ffd700; text-decoration: none; font-weight: bold;">GitHub</a> 
               o conectar conmigo en 
-              <a href="www.linkedin.com/in/daniel-solarte-97486b329" style="color: #ffd700; text-decoration: none; font-weight: bold;">LinkedIn</a>.
+              <a href="https://www.linkedin.com/in/daniel-solarte-97486b329" style="color: #ffd700; text-decoration: none; font-weight: bold;">LinkedIn</a>.
             </p>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
@@ -315,17 +316,17 @@ app.post('/contact', async (req, res) => {
     await transporter.sendMail(mailToSender);
     
     // Responder con éxito
-    return res.render('index', {
+    return res.status(200).render('index', {
       title: 'Daniel Solarte - Full-Stack Developer',
-      success: '¡Mensaje enviado correctamente! Te responderé pronto.'
+      successMessage: '¡Mensaje enviado correctamente! Te responderé pronto.'
     });
     
   } catch (error) {
-    console.error('❌ Error al enviar email:', error);
+    console.error('Error al enviar email:', error);
     
-    return res.render('index', {
+    return res.status(500).render('index', {
       title: 'Daniel Solarte - Full-Stack Developer',
-      error: 'Hubo un error al enviar el mensaje. Por favor, intenta nuevamente o contáctame directamente por email.',
+      errorMessage: 'Hubo un error al enviar el mensaje. Por favor, intenta nuevamente o contáctame directamente por email.',
       formData: req.body
     });
   }

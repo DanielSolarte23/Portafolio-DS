@@ -9,17 +9,25 @@
     <link rel="shortcut icon" href="/assets/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/styles.min.css">
     <!-- Google tag (gtag.js) -->
+    {{!--
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SFJ2SPHSB2"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-SFJ2SPHSB2');
-    </script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SFJ2SPHSB2');
+    </script> --}}
 </head>
 
 
 <body>
+    {{#if successMessage}}
+    <div data-success-message="{{successMessage}}" style="display:none;"></div>
+    {{/if}}
+
+    {{#if errorMessage}}
+    <div data-error-message="{{errorMessage}}" style="display:none;"></div>
+    {{/if}}
     <!-- Navigation -->
     <nav class="nav" role="navigation" aria-label="Navegación principal">
         <div class="nav-container">
@@ -69,10 +77,15 @@
             <div class="about-content">
                 <div class="about-text reveal-left">
                     <p>
-                        Soy Desarrollador Full-Stack Junior con 2 año de experiencia profesional en proyectos web. Durante este tiempo he trabajado en el desarrollo de aplicaciones dinámicas y escalables, además de realizar pequeñas automatizaciones con Python y experimentar con modelos de IA, lo que me ha motivado a seguir explorando este campo.
+                        Soy Desarrollador Full-Stack Junior con 2 año de experiencia profesional en proyectos web.
+                        Durante este tiempo he trabajado en el desarrollo de aplicaciones dinámicas y escalables, además
+                        de realizar pequeñas automatizaciones con Python y experimentar con modelos de IA, lo que me ha
+                        motivado a seguir explorando este campo.
                     </p>
                     <p>
-                        Me caracterizo por el compromiso, la adaptabilidad y el aprendizaje constante. Mi objetivo es seguir creciendo en entornos colaborativos, aportar valor en cada proyecto y evolucionar como profesional en el mundo del desarrollo y la tecnología.
+                        Me caracterizo por el compromiso, la adaptabilidad y el aprendizaje constante. Mi objetivo es
+                        seguir creciendo en entornos colaborativos, aportar valor en cada proyecto y evolucionar como
+                        profesional en el mundo del desarrollo y la tecnología.
                     </p>
                 </div>
                 <div class="about-info reveal-right">
@@ -95,13 +108,13 @@
                         </div>
                     </div>
                     <div class="about-actions">
-<<<<<<< HEAD
-                        <a href="/assets/CV-Daniel-SolarteRef.pdf" download class="btn btn-primary">Descargar CV</a>
+                        <a href="/assets/CV-Daniel-SolarteRef.pdf" download class="btn btn-primary">
+                            Descargar HV</a>
                         <a href="/assets/portfolio.pdf" download class="btn btn-secondary">Descargar Portafolio</a>
-=======
-                        <a href="/assets/Daniel_SolarteF.pdf" download class="btn btn-primary">Descargar HV</a>
-                        {{!-- <a href="/assets/portfolio.pdf" download class="btn btn-secondary">Descargar Portafolio</a> --}}
->>>>>>> 40446733c53b53d06e98cb24854b6308f48e754d
+{{!-- 
+                        <a href="/assets/Daniel_SolarteF.pdf" download class="btn btn-primary">Descargar HV</a> --}}
+                        {{!-- <a href="/assets/portfolio.pdf" download class="btn btn-secondary">Descargar
+                            Portafolio</a> --}}
                     </div>
                 </div>
             </div>

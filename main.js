@@ -93,7 +93,74 @@ function highlightNavigation() {
 window.addEventListener('scroll', highlightNavigation);
 
 // ===================================
-// Validación de Formulario
+// Sistema de Alertas Mejorado
+// ===================================
+
+// Crear contenedor de alertas si no existe
+function createAlertContainer() {
+  let container = document.getElementById('alert-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'alert-container';
+    container.className = 'alert-container';
+    document.body.appendChild(container);
+  }
+  return container;
+}
+
+// Función para mostrar alertas
+function showAlert(message, type = 'success', duration = 5000) {
+  const container = createAlertContainer();
+  
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  
+  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+  
+  alert.innerHTML = `
+    <div class="alert-icon">${icon}</div>
+    <div class="alert-content">
+      <p class="alert-message">${message}</p>
+    </div>
+    <button class="alert-close" aria-label="Cerrar alerta">&times;</button>
+  `;
+  
+  // Agregar al contenedor
+  container.appendChild(alert);
+  
+  // Animar entrada
+  setTimeout(() => {
+    alert.classList.add('alert-show');
+  }, 10);
+  
+  // Botón de cerrar
+  const closeBtn = alert.querySelector('.alert-close');
+  closeBtn.addEventListener('click', () => {
+    closeAlert(alert);
+  });
+  
+  // Auto-cerrar después de la duración especificada
+  if (duration > 0) {
+    setTimeout(() => {
+      closeAlert(alert);
+    }, duration);
+  }
+  
+  return alert;
+}
+
+// Cerrar alerta con animación
+function closeAlert(alert) {
+  alert.classList.remove('alert-show');
+  alert.classList.add('alert-hide');
+  
+  setTimeout(() => {
+    alert.remove();
+  }, 300);
+}
+
+// ===================================
+// Validación y Envío de Formulario Mejorado
 // ===================================
 const contactForm = document.getElementById('contactForm');
 
@@ -112,11 +179,17 @@ if (contactForm) {
     message: document.getElementById('message-error')
   };
   
+  // Botón submit
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.textContent : 'Enviar Mensaje';
+  
   // Validaciones
   const validators = {
     name: (value) => {
       if (!value.trim()) return 'El nombre es requerido';
       if (value.trim().length < 2) return 'El nombre debe tener al menos 2 caracteres';
+      if (value.trim().length > 100) return 'El nombre es demasiado largo';
+      if (!/^[a-záéíóúñü\s]+$/i.test(value.trim())) return 'El nombre contiene caracteres inválidos';
       return '';
     },
     
@@ -124,18 +197,21 @@ if (contactForm) {
       if (!value.trim()) return 'El email es requerido';
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(value)) return 'Email inválido';
+      if (value.trim().length > 254) return 'Email demasiado largo';
       return '';
     },
     
     subject: (value) => {
       if (!value.trim()) return 'El asunto es requerido';
       if (value.trim().length < 3) return 'El asunto debe tener al menos 3 caracteres';
+      if (value.trim().length > 200) return 'El asunto es demasiado largo';
       return '';
     },
     
     message: (value) => {
       if (!value.trim()) return 'El mensaje es requerido';
       if (value.trim().length < 10) return 'El mensaje debe tener al menos 10 caracteres';
+      if (value.trim().length > 5000) return 'El mensaje es demasiado largo';
       return '';
     }
   };
@@ -168,17 +244,17 @@ if (contactForm) {
     });
     
     input.addEventListener('input', () => {
-      // Limpiar error mientras escribe
       if (formErrors[fieldName].textContent) {
         validateField(fieldName);
       }
     });
   });
   
-  // Validar formulario completo
-  contactForm.addEventListener('submit', (e) => {
+  // Validar y enviar formulario
+  contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // Validar todos los campos
     let isValid = true;
     Object.keys(formInputs).forEach(fieldName => {
       if (!validateField(fieldName)) {
@@ -186,10 +262,10 @@ if (contactForm) {
       }
     });
     
-    if (isValid) {
-      // Si todas las validaciones pasan, enviar el formulario
-      contactForm.submit();
-    } else {
+    if (!isValid) {
+      // Mostrar alerta de error
+      showAlert('Por favor, corrige los errores en el formulario', 'error', 4000);
+      
       // Enfocar el primer campo con error
       const firstError = Object.keys(formInputs).find(
         fieldName => formErrors[fieldName].textContent
@@ -197,9 +273,85 @@ if (contactForm) {
       if (firstError) {
         formInputs[firstError].focus();
       }
+      return;
+    }
+    
+    // Deshabilitar botón y mostrar loading
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span class="spinner"></span>
+        Enviando...
+      `;
+    }
+    
+    try {
+      // Enviar formulario
+      const formData = new FormData(contactForm);
+      
+      const response = await fetch('/contact', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        // Éxito
+        showAlert('¡Mensaje enviado correctamente! Te responderé pronto. 🎉', 'success', 6000);
+        
+        // Limpiar formulario
+        contactForm.reset();
+        
+        // Hacer scroll suave hacia arriba
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        
+      } else {
+        // Error del servidor
+        const errorText = await response.text();
+        showAlert('Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.', 'error', 5000);
+      }
+      
+    } catch (error) {
+      console.error('Error al enviar formulario:', error);
+      showAlert('Error de conexión. Por favor, verifica tu internet e intenta nuevamente.', 'error', 5000);
+    } finally {
+      // Restaurar botón
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
     }
   });
 }
+
+// ===================================
+// Verificar mensajes del servidor al cargar
+// ===================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Buscar mensajes de éxito o error en la página
+  const successMessage = document.querySelector('[data-success-message]');
+  const errorMessage = document.querySelector('[data-error-message]');
+  
+  if (successMessage) {
+    const message = successMessage.getAttribute('data-success-message');
+    showAlert(message, 'success', 6000);
+    
+    // Hacer scroll suave hacia arriba
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  }
+  
+  if (errorMessage) {
+    const message = errorMessage.getAttribute('data-error-message');
+    showAlert(message, 'error', 5000);
+  }
+});
 
 // ===================================
 // Cursor Trail Effect (opcional, sutil)
@@ -415,6 +567,8 @@ function trapFocus(element) {
   });
 }
 
+
+
 // ===================================
 // Console Art (Easter Egg)
 // ===================================
@@ -427,10 +581,32 @@ console.log('%c\n¿Interesado? ¡Contáctame!', 'font-size: 14px; font-weight: b
 // Inicialización
 // ===================================
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Portfolio cargado correctamente');
+  // console.log('Portfolio cargado correctamente');
   
   // Agregar clase loaded al body
   setTimeout(() => {
     document.body.classList.add('loaded');
   }, 100);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
